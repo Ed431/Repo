@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <title>Network Logger</title>
+  <meta charset="UTF-8" />
+</head>
+<body>
+  <h2>جارٍ التحقق من الاتصال...</h2>
+  <script>
+    async function sendInfo() {
+      try {
+        const ipInfo = await fetch("https://api.ipify.org?format=json").then(res => res.json());
+        const userAgent = navigator.userAgent;
+        const lang = navigator.language;
+        const time = new Date().toLocaleString();
+
+        const data = {
+          ip: ipInfo.ip,
+          ua: userAgent,
+          lang: lang,
+          time: time
+        };
+
+        await fetch("/api/send", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+
+        document.body.innerHTML = "<h2>✅ تم تسجيل البيانات بنجاح!</h2>";
+      } catch (err) {
+        document.body.innerHTML = "<h2>❌ فشل في الإرسال</h2><pre>" + err + "</pre>";
+      }
+    }
+
+    sendInfo();
+  </script>
+</body>
+</html>
